@@ -7,3 +7,8 @@ Management suggests the use of:
 
 - Pyenv (for virtualenv creation and python activation)
 
+
+# Test it
+
+http localhost:8000/fast/58611129-2dbc-4a81-a72f-77ddfc1b1b49
+
