@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import asyncio
 import httpx
 
 app = FastAPI()
@@ -16,7 +17,7 @@ def read_root():
     return {"Hello": "World"}
 
 
-@app.get("/slow/")
+@app.get("/sync/")
 def get_info():
     data = []
     for url in [f"{anime_url}/{anime_id}" for anime_id in anime_ids]:
@@ -25,12 +26,16 @@ def get_info():
     return data
 
 
-@app.get("/fast/")
+@app.get("/async/")
 async def get_info_fast():
-    data = []
+    tasks = []
     async with httpx.AsyncClient() as client:
+        
         for url in [f"{anime_url}/{anime_id}" for anime_id in anime_ids]:
-            response = await client.get(url)
-            data.append(response.json())
-    return data
+            task = client.get(url)
+            tasks.append(task)
+
+        responses = await asyncio.gather(*tasks)
+
+    return [response.json() for response in responses]
 
